@@ -4,8 +4,8 @@ import "io/ioutil"
 
 // File strcuture for a file
 type File struct {
-	title string
-	body  []byte
+	Title string
+	Body  []byte
 }
 
 func getFileName(title string) string {
@@ -21,10 +21,10 @@ func loadFile(title string) (*File, error) {
 		return nil, err
 	}
 
-	return &File{title: title, body: body}, nil
+	return &File{Title: title, Body: body}, nil
 }
 
 func (f *File) saveFile() error {
-	filename := getFileName(f.title)
-	return ioutil.WriteFile(filename, f.body, 0600)
+	filename := getFileName(f.Title)
+	return ioutil.WriteFile(filename, f.Body, 0600)
 }

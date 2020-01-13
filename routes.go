@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 )
 
@@ -43,6 +44,7 @@ func FileHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintf(w, "Error happened: %v", err)
 	} else {
-		fmt.Fprintf(w, "<h1>%s</h1><p>%s</p>", file.title, file.body)
+		t, _ := template.ParseFiles("templates/file.html")
+		t.Execute(w, file)
 	}
 }
