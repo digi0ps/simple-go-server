@@ -13,6 +13,7 @@ func setupRoutes() {
 	http.HandleFunc("/profile", ProfilePageHandler)
 	http.HandleFunc("/files/", FileHandler)
 	http.HandleFunc("/edit/", CreateAndEditHandler)
+	http.HandleFunc("/save/", SaveHandler)
 }
 
 func startServer(port int) {

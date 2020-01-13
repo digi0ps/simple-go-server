@@ -47,7 +47,8 @@ func FileHandler(w http.ResponseWriter, r *http.Request) {
 	file, err := loadFile(filename)
 
 	if err != nil {
-		fmt.Fprintf(w, "Error happened: %v", err)
+		http.Redirect(w, r, "/edit/"+filename, http.StatusFound)
+		return
 	} else {
 		render(w, "file.html", file)
 	}
@@ -64,4 +65,17 @@ func CreateAndEditHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		render(w, "edit.html", file)
 	}
+}
+
+// SaveHandler is a controller for saving the file
+func SaveHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.FormValue("title")
+	body := r.FormValue("body")
+
+	fmt.Println("POST --> ", title, body)
+
+	file := File{Title: title, Body: []byte(body)}
+	file.saveFile()
+
+	http.Redirect(w, r, "/files/"+title, http.StatusFound)
 }
