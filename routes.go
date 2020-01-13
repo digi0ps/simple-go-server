@@ -1,37 +1,48 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 )
 
+var templates = template.Must(template.ParseFiles("templates/main.html", "templates/file.html", "templates/edit.html"))
+
 func render(out http.ResponseWriter, templateName string, file *File) {
-	t, _ := template.ParseFiles("templates/" + templateName)
-	t.Execute(out, file)
+	tmpl := "templates/" + templateName
+	templates.ExecuteTemplate(out, tmpl, file)
+}
+
+// TempFiles for sending the file list in Home
+type TempFiles struct {
+	Names []string
 }
 
 // HomePageHandler handles the / route (aka home)
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
-	var path string = r.URL.Path[1:]
-	fmt.Fprintf(w, "Welcome to the my go site.\n")
+	path := r.URL.Path[1:]
+
+	fmt.Println("Path")
 
 	if path == "" {
-		fmt.Fprintf(w, "You're in homepage")
+		files, _ := ioutil.ReadDir("files")
+		var names []string
+
+		for _, file := range files {
+			name := file.Name()
+			name = name[:len(name)-len(".gofl")]
+			names = append(names, name)
+		}
+
+		fmt.Println(names)
+
+		err := templates.ExecuteTemplate(w, "templates/main.html", &TempFiles{Names: names})
+		fmt.Println("Err", err)
 	} else {
-		fmt.Fprintf(w, "You're in page %s", path)
+		http.Error(w, errors.New("404 Route Not Found").Error(), http.StatusNotFound)
 	}
-
-	fmt.Println("USER AGENT", r.UserAgent())
-	fmt.Println("URL", path)
-}
-
-// ProfilePageHandler handles the /profile route
-func ProfilePageHandler(w http.ResponseWriter, r *http.Request) {
-	ua := r.UserAgent()
-
-	fmt.Fprintf(w, "Welcome User\n")
-	fmt.Fprintf(w, "Your user agent is \t%s", ua)
 }
 
 // FileHandler handles the /files/<filename> and fetches the file from local
@@ -48,7 +59,6 @@ func FileHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Redirect(w, r, "/edit/"+filename, http.StatusFound)
-		return
 	} else {
 		render(w, "file.html", file)
 	}

@@ -9,11 +9,10 @@ import (
 const port int = 8888
 
 func setupRoutes() {
-	http.HandleFunc("/", HomePageHandler)
-	http.HandleFunc("/profile", ProfilePageHandler)
 	http.HandleFunc("/files/", FileHandler)
 	http.HandleFunc("/edit/", CreateAndEditHandler)
 	http.HandleFunc("/save/", SaveHandler)
+	http.HandleFunc("/", HomePageHandler)
 }
 
 func startServer(port int) {
