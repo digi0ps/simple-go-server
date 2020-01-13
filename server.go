@@ -9,10 +9,10 @@ import (
 const port int = 8888
 
 func setupRoutes() {
-	http.HandleFunc("/files/", FileHandler)
-	http.HandleFunc("/edit/", CreateAndEditHandler)
-	http.HandleFunc("/save/", SaveHandler)
-	http.HandleFunc("/", HomePageHandler)
+	http.HandleFunc("/files/", logger(FileHandler))
+	http.HandleFunc("/edit/", logger(CreateAndEditHandler))
+	http.HandleFunc("/save/", logger(SaveHandler))
+	http.HandleFunc("/", logger(HomePageHandler))
 }
 
 func startServer(port int) {
@@ -23,6 +23,6 @@ func startServer(port int) {
 }
 
 func main() {
-	fmt.Printf("Starting server at %d...", port)
+	fmt.Printf("Starting server at %d...\n", port)
 	startServer(port)
 }

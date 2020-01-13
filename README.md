@@ -20,6 +20,4 @@ Simple Go Server implements a basic web server using Go to create and view files
 - Routing using Go
 - Templating in Go
 - File handling in Go
-
-### Yet to do
-- Middlewares
+- Middlewares in Go
