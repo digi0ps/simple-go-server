@@ -27,3 +27,22 @@ func ProfilePageHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome User\n")
 	fmt.Fprintf(w, "Your user agent is \t%s", ua)
 }
+
+// FileHandler handles the /files/<filename> and fetches the file from local
+func FileHandler(w http.ResponseWriter, r *http.Request) {
+	filename := r.URL.Path[len("/files/"):]
+	fmt.Println("FILENAME --> ", filename)
+
+	if filename == "" {
+		fmt.Fprintf(w, "Enter the correct path")
+		return
+	}
+
+	file, err := loadFile(filename)
+
+	if err != nil {
+		fmt.Fprintf(w, "Error happened: %v", err)
+	} else {
+		fmt.Fprintf(w, "<h1>%s</h1><p>%s</p>", file.title, file.body)
+	}
+}

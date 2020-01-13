@@ -11,6 +11,7 @@ const port int = 8888
 func setupRoutes() {
 	http.HandleFunc("/", HomePageHandler)
 	http.HandleFunc("/profile", ProfilePageHandler)
+	http.HandleFunc("/files/", FileHandler)
 }
 
 func startServer(port int) {
