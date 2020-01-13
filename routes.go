@@ -6,6 +6,11 @@ import (
 	"net/http"
 )
 
+func render(out http.ResponseWriter, templateName string, file *File) {
+	t, _ := template.ParseFiles("templates/" + templateName)
+	t.Execute(out, file)
+}
+
 // HomePageHandler handles the / route (aka home)
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
 	var path string = r.URL.Path[1:]
@@ -44,7 +49,19 @@ func FileHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintf(w, "Error happened: %v", err)
 	} else {
-		t, _ := template.ParseFiles("templates/file.html")
-		t.Execute(w, file)
+		render(w, "file.html", file)
+	}
+}
+
+// CreateAndEditHandler handles the editing/creating of old/new files.
+func CreateAndEditHandler(w http.ResponseWriter, r *http.Request) {
+	filename := r.URL.Path[len("/edit/"):]
+
+	file, err := loadFile(filename)
+
+	if err != nil {
+		render(w, "edit.html", &File{Title: filename})
+	} else {
+		render(w, "edit.html", file)
 	}
 }
